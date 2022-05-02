@@ -1,7 +1,6 @@
 from cmath import exp
-import tkinter
 from tkinter import *
-from unittest import result
+# from unittest import result
 
 window = Tk()
 window.title("Calculator")
@@ -10,13 +9,38 @@ window.configure(bg="#171717")
 window.resizable(False, False)
 result_label = Label(window, width=30, height=2, text="", font=("arial", 30))
 result_label.pack()
-
 expression = ""
+evaluated = False
 
 
 def show(val):
     global expression
-    expression += val
+    global evaluated
+    symbols = ['+', '-', '/', '*', '%', '.']
+
+    if evaluated and val not in symbols:
+        expression = ""
+        evaluated = False
+        pass
+
+    if expression != "":
+        if val in symbols and expression[-1] in symbols:
+            expression = expression[:-1]
+
+        if expression[0]=='0' and len(expression)==1 and val not in symbols:
+            expression = ""
+            expression += val
+
+        else:
+            expression += val
+
+    else:
+        if val in symbols:
+            pass
+        else:
+            expression += val
+
+    evaluated = False
     result_label.config(text=expression)
 
 
@@ -28,16 +52,19 @@ def clear():
 
 def calculate():
     global expression
+    global evaluated
     result = ""
 
-    if expression!="":
+    if expression != "":
         try:
-            result=eval(expression)
+            result = eval(expression)
+            evaluated = True
+
         except:
             result = "error"
             expression = ""
 
-    expression=str(result)
+    expression = str(result)
     result_label.config(text=result)
 
 
